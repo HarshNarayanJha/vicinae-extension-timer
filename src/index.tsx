@@ -1,4 +1,14 @@
-import { List, ActionPanel, Action, Icon, Cache, getPreferenceValues, Color } from "@vicinae/api"
+import {
+  List,
+  ActionPanel,
+  Action,
+  Icon,
+  Cache,
+  getPreferenceValues,
+  Color,
+  showToast,
+  Toast,
+} from "@vicinae/api"
 import { useState, useEffect } from "react"
 import { exec } from "child_process"
 import { parseInput, formatTime, formatTargetTime } from "./utils"
@@ -65,7 +75,14 @@ export default function TimerCommand() {
     const cmd = `systemd-run --user --on-active="${seconds}s" --timer-property=AccuracySec=1s --unit="${unitName}" -- /bin/bash -c 'notify-send -a "Vicinae" "Timer" "${timerNote}"'`
 
     exec(cmd, error => {
-      if (error) console.error(`Failed to create systemd timer: ${error.message}`)
+      if (error) {
+        showToast({
+          style: Toast.Style.Failure,
+          title: "Failed to start timer",
+          message: "Ensure 'systemd' and 'libnotify' are installed.",
+        })
+        return
+      }
     })
 
     const newTimer: Timer = {

@@ -2,8 +2,10 @@
   "$schema": "https://raw.githubusercontent.com/vicinaehq/vicinae/refs/heads/main/extra/schemas/extension.json",
   "name": "timer",
   "title": "Timer",
-  "description": "Create timers and get notified",
-  "categories": [],
+  "description": "Create and manage system-native background timers using natural language.",
+  "categories": [
+    "Productivity"
+  ],
   "license": "MIT",
   "author": "HarshNarayanJha",
   "contributors": [],
@@ -11,10 +13,9 @@
   "icon": "extension_icon.png",
   "commands": [
     {
-      "name": "timer",
-      "title": "Timer",
-      "subtitle": "Start a new timer or view active timers",
-      "description": "Starts a new timer with duration and an optional name and view the timers history",
+      "name": "index",
+      "title": "Start Timer",
+      "description": "Start a new timer or select from presets.",
       "mode": "view"
     }
   ],

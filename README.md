@@ -1,22 +1,21 @@
-# Timer
+# Vicinae Timer
 
-A native Linux timer extension for Vicinae, built with React and TypeScript. It supports natural language input,
-background execution, and customizable presets.
+Create and manage system-native timers directly from Vicinae.
 
 ## Requirements
 
-This extension relies heavily on native Linux utilities. It will **not** work on macOS or Windows. This is obviously not
-because Vicinae itself does not support these platforms.
+This extension requires the following standard Linux utilities. If timers fail to start, ensure these are available on your system:
 
-- **systemd:** Background timers use `systemd-run` transient timers. Your Linux distribution must use `systemd`.
-- **libnotify:** Requires `notify-send` for desktop notifications.
+- `systemd` (Specifically `systemd-run` for user-level transient timers)
+- `libnotify` (Provides the `notify-send` command for desktop alerts)
+
+These are pre-installed on most modern Linux distributions (Ubuntu, Fedora, Arch Linux).
 
 ## Features
 
-- Timers are managed by `systemd`, ensuring they track absolute time and trigger correctly even if your system goes to sleep.
-- Supports flexible time inputs and optional notes directly in the search bar.
-- Define frequently used timers in the extension preferences.
-- Active timers survive Vicinae UI restarts via the Cache API.
+- Timers run natively in the background using `systemd-run`, ensuring accurate tracking even if the system suspends.
+- Specify durations naturally (e.g., `5m`, `1h 30m Check oven`), supporting small notes visible in notification.
+- Save frequently used timers in the extension preferences.
 
 ## Usage
 
