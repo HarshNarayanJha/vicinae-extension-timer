@@ -6,6 +6,12 @@
   "categories": [
     "Productivity"
   ],
+  "keywords": [
+    "timer",
+    "clock",
+    "alert",
+    "countdown"
+  ],
   "license": "MIT",
   "author": "HarshNarayanJha",
   "contributors": [],
@@ -13,7 +19,7 @@
   "icon": "extension_icon.png",
   "commands": [
     {
-      "name": "index",
+      "name": "timer",
       "title": "Start Timer",
       "description": "Start a new timer or select from presets.",
       "mode": "view"
@@ -34,6 +40,7 @@
     "dev": "vici develop",
     "format": "biome format --write src",
     "lint": "vici lint",
+    "test": "bun test",
     "publish": "./publish.sh"
   },
   "dependencies": {

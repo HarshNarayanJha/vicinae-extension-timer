@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test"
-import { parseInput, formatTime, formatTargetTime } from "./utils"
+import { parseInput, formatTime, formatTargetTime } from "../src/utils"
 
 describe("parseInput", () => {
   test("parses plain numbers as minutes", () => {

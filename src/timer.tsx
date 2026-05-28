@@ -10,8 +10,8 @@ import {
   Toast,
 } from "@vicinae/api"
 import { useState, useEffect } from "react"
-import { exec } from "child_process"
 import { parseInput, formatTime, formatTargetTime } from "./utils"
+import { cancelTimer, createTimer } from "./notify"
 
 type Timer = {
   id: string
@@ -69,47 +69,50 @@ export default function TimerCommand() {
   const { seconds: parsedSeconds, note } = parseInput(searchText)
 
   const startTimer = (seconds: number, timerNote: string) => {
-    const id = Date.now().toString()
-    const unitName = `vicinae-timer-${id}`
+    try {
+      const { id, unitName } = createTimer(seconds, timerNote)
 
-    const cmd = `systemd-run --user --on-active="${seconds}s" --timer-property=AccuracySec=1s --unit="${unitName}" -- /bin/bash -c 'notify-send -a "Vicinae" "Timer" "${timerNote}"'`
-
-    exec(cmd, error => {
-      if (error) {
-        showToast({
-          style: Toast.Style.Failure,
-          title: "Failed to start timer",
-          message: "Ensure 'systemd' and 'libnotify' are installed.",
-        })
-        return
+      const newTimer: Timer = {
+        id,
+        name: formatTime(seconds),
+        note: timerNote,
+        targetEpoch: Date.now() + seconds * 1000,
+        unitName,
       }
-    })
 
-    const newTimer: Timer = {
-      id,
-      name: formatTime(seconds),
-      note: timerNote,
-      targetEpoch: Date.now() + seconds * 1000,
-      unitName,
+      const newTimers = [newTimer, ...timers]
+      setTimers(newTimers)
+      cache.set("active_timers", JSON.stringify(newTimers))
+      setSearchText("")
+    } catch (error) {
+      console.error(error)
+      showToast({
+        style: Toast.Style.Failure,
+        title: "Failed to start timer",
+        message: "Ensure 'systemd' and 'libnotify' are installed.",
+      })
     }
-
-    const newTimers = [newTimer, ...timers]
-    setTimers(newTimers)
-    cache.set("active_timers", JSON.stringify(newTimers))
-    setSearchText("")
   }
 
-  const cancelTimer = (id: string, unitName: string) => {
-    exec(`systemctl --user stop ${unitName}.timer`)
+  const dismissTimer = (id: string, unitName: string) => {
+    try {
+      cancelTimer(unitName)
+    } catch (error) {
+      console.error(error)
+    }
     const updated = timers.filter(t => t.id !== id)
     setTimers(updated)
     cache.set("active_timers", JSON.stringify(updated))
   }
 
-  const cancelAllTimers = () => {
-    timers.forEach(t => {
-      exec(`systemctl --user stop ${t.unitName}.timer`)
-    })
+  const dismissAllTimers = () => {
+    try {
+      timers.forEach(t => {
+        cancelTimer(t.unitName)
+      })
+    } catch (error) {
+      console.error(error)
+    }
     setTimers([])
     cache.set("active_timers", JSON.stringify([]))
   }
@@ -153,7 +156,7 @@ export default function TimerCommand() {
                 <ActionPanel>
                   <Action
                     title="Cancel Timer"
-                    onAction={() => cancelTimer(timer.id, timer.unitName)}
+                    onAction={() => dismissTimer(timer.id, timer.unitName)}
                     icon={Icon.Stop}
                     style="destructive"
                   />
@@ -164,7 +167,7 @@ export default function TimerCommand() {
                   />
                   <Action
                     title="Cancel All Timers"
-                    onAction={cancelAllTimers}
+                    onAction={dismissAllTimers}
                     icon={Icon.Trash}
                     shortcut={{ modifiers: ["ctrl", "shift"], key: "backspace" }}
                     style="destructive"

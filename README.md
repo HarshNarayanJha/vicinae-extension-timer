@@ -36,3 +36,26 @@ Configure the extension via Vicinae Preferences:
 
 - **Timer Presets:** A comma-separated list of your favorite timers.  
   _Example:_ `5m Tea, 25m Pomodoro, 1h Focus`
+
+## Development
+
+### Feature Requests
+
+If the feature makes sense, it will be implemented as soon as possible. Open an issue on
+[GitHub](https://github.com/HarshNarayanJha/vicinae-extension-timer/issues) to request it.
+
+### Contributing
+
+Feel free to contribute. Find the complete source code on
+[GitHub](https://github.com/HarshNarayanJha/vicinae-extension-timer).
+
+### Testing
+
+Run the test suite using `bun test`.
+
+### Publishing
+
+Make sure to configure the path to the cloned source-tree of your fork of vicinae-extensions repo in `publish.sh`
+
+Then run `bun run publish`. It will copy all required files to the `timer` subdirectory in `extensions`. After that
+commit, push and open up a PR to update the extension.
